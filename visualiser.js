@@ -42,24 +42,32 @@ function addLights(){
 	scene.add( directionalLight );
 }
 
+function lineBetween(array, i, j){
+	geometry = new THREE.Geometry(100, 10);
+	geometry.vertices.push(new THREE.Vector3(array[i][0], 3, array[i][1]));
+	geometry.vertices.push(new THREE.Vector3(array[j][0], 3, array[j][1]));
+	material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 20 } );
+	line = new THREE.Line(geometry, material);
+	scene.add(line);
+}
+
 function addSceneElements(){
 	var stations = [[10, 20], [0, 5], [-15, 15], [10, -10]];
-	var stationMat = new THREE.MeshPhongMaterial({ color: 0xe0f0f0});
-	var boxMat = new THREE.MeshPhongMaterial({ color: 0x880044});
+	var stationMat = new THREE.MeshPhongMaterial({ color: 0xcc3a3a});
 	var floorMat = new THREE.MeshPhongMaterial({ color: 0xffffff});
 
 
 	var floor = new THREE.Mesh( new THREE.BoxGeometry(50, 1, 50), floorMat);
-	var cube = new THREE.Mesh( new THREE.BoxGeometry(10,10,10), boxMat );
 
 	for(var i=0; i<stations.length; i++){
 		var stationMesh = new THREE.Mesh( new THREE.BoxGeometry(5,5,5), stationMat);
 		scene.add(stationMesh);
-		stationMesh.position.set(stations[i][0], 0, stations[i][1]);
+		stationMesh.position.set(stations[i][0], 1, stations[i][1]);
 	}
-	scene.add(cube);
 	scene.add(floor);
-
+	for(var i = 1; i<stations.length; i++){
+		lineBetween(stations, i-1, i)
+	}
 }
 
 function animate() {
