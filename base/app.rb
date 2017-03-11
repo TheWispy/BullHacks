@@ -10,12 +10,14 @@ set :bind, "0.0.0.0"
 
 # Website Index page (root directory)
 get '/index.json' do
-	
 
-	check_stations_on_route ["SHF", "CHD", "DBY", "TAM", "BHM"]
-	
+	#check_stations_on_route ["SHF", "CHD", "DBY", "TAM", "BHM"]
+	check_stations_on_route ["BDM", "FLT", "HLN", "LEA", "LUT", "LTN", "HPN", "SAC", "RDT", "WHP", "STP"]
 end
 
+# 
+
+# Get trains passing through a particular group of stations
 def check_stations_on_route route_array
 	trainsList = []
 
@@ -36,7 +38,6 @@ def check_stations_on_route route_array
 			trainsList.each do |train|
 				if (train[:uid] == departure[:uid])
 					# Add station and time to existing item if seen before
-					puts "I'VE SEEN THIS FUCKING THING BEFOREEEEEEEEEEE"
 					seenBefore = true
 
 					train[:stations].push(newStation)
@@ -47,17 +48,14 @@ def check_stations_on_route route_array
 			if !seenBefore
 				trainsList.push({
 					:uid => departure[:uid],
+					:origin => departure[:origin],
 					:stations => [newStation]
 				})
 			end
-
-			#puts trainsList[trainsList.length-1]
+			puts trainsList[trainsList.length-1]
 		end
 	end
-
-	#puts trainsList
-	output = trainsList
-	return JSON.pretty_generate(output)
+	return JSON.pretty_generate(trainsList)
 end
 
 def make_train_objects station_name
