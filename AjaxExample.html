@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css">
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
+
+
+    <meta charset="UTF-8">
+    <title>AJAX Example</title>
+</head>
+<body>
+<div>
+    <h1>This is a test page that loads the data from the API into a nice HTML table</h1>
+    <button id="refresh">Refresh</button>
+    <table id="trains">
+        <thead>
+        <tr>
+            <th>Operator</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Arrival Time</th>
+            <th>Departure Time</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+
+<script>
+    var url = "http://52.90.94.50/node";
+    var loadData = function() {
+        $('#trains').find('tbody').empty();
+        $.getJSON(url, function (data) {
+            $.each(data, function (key, value) {
+                $('#trains').find('tbody').append(`<tr><td>${value['operator']}</td><td>${value['origin']}</td><td>${value['destination']}</td><td>${value['arrival_time']}</td><td>${value['departure_time']}</td></tr>`)
+            });
+        });
+    };
+
+    $('#refresh').click(loadData);
+
+</script>
+</html>
