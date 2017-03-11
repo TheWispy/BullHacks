@@ -2,10 +2,11 @@ var camera;
 var scene;
 var renderer;
 var controls;
+var stations = [[10, 20], [0, 5], [-15, 15], [10, -10]];
+var train;
 
 init();
 animate();
-
 //Scene initialisation
 function init(){
 	//Create scene
@@ -51,8 +52,25 @@ function lineBetween(array, i, j){
 	scene.add(line);
 }
 
+function train(to, from, factor){
+	this.to = to;
+	this.from = from;
+	this.factor = 0;
+}
+
+function beginTrain(i, j, factor){
+    var trainMat = new THREE.MeshPhongMaterial({ color: 0xd42525});
+    train = new THREE.Mesh( new THREE.BoxGeometry(1, 1, 4));
+    scene.add(train);
+    train.position.set(stations[i][0], 1, stations[i][1]);
+
+    var dx = stations[j][0] - train.position.x;
+    var dz = stations[j][1] - train.position.z;
+	var tween = new TWEEN.Tween(train.position).to({ x: train.position.x+dx*factor, y: mesh.position.y, z: train.position.z+dz*factor }, time).start();
+}
+
 function addSceneElements(){
-	var stations = [[10, 20], [0, 5], [-15, 15], [10, -10]];
+
 	var stationMat = new THREE.MeshPhongMaterial({ color: 0xcc3a3a});
 	var floorMat = new THREE.MeshPhongMaterial({ color: 0xffffff});
 
@@ -73,6 +91,7 @@ function addSceneElements(){
 function animate() {
     renderer.render( scene, camera );
     requestAnimationFrame( animate );
+	TWEEN.update();
     controls.update();
 }
 
