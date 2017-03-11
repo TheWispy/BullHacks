@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+# Sinatra
+gem "sinatra"
+gem "sinatra-contrib"
+gem "thin"
+
+# Http
+gem "http"
