@@ -12,7 +12,7 @@ APP_KEY = "85d57f66a571c8a2138d066380632136";
 
 set :bind, "0.0.0.0"
 
-@stationsAccessed = []
+$stationsAccessed = []
 
 # Website Index page (root directory)
 get '/trains.json' do
@@ -80,8 +80,8 @@ get '/trains.json' do
 	# get arrival times for selected uids
 	routes_with_arrivals = get_arrival_times_by_uid
 
-	return JSON.parse(routes_with_arrivals)
-	#erb :index
+	#return routes_with_arrivals
+	(routes_with_arrivals).to_json
 end
 
 post '/schedule.json' do
@@ -198,7 +198,7 @@ end
 # Return raw json of trains passing through a station
 def get_departures station_name
 	# See if the station was accessed before
-	@stationsAccessed.each do |station|
+	$stationsAccessed.each do |station|
 		if (station["station_code"] == station_name)
 			puts "Seen before"
 			return station
@@ -206,8 +206,9 @@ def get_departures station_name
 	end
 
 	# If not accessed before
+	puts "======== MADE A REQUEST TO TRANSPORT API POOOR THEM"
 	get_request = JSON.parse(HTTP.get("https://transportapi.com/v3/uk/train/station/#{station_name}/live.json?app_id=#{APP_ID}&app_key=#{APP_KEY}&darwin=false&train_status=passenger").body)
-	@stationsAccessed.push(get_request)
+	$stationsAccessed.push(get_request)
 	return get_request
 end
 
