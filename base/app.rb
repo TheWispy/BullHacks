@@ -26,9 +26,9 @@ get '/trains.json' do
 	}
 
 	# Get 10 trains passing through baseStation
-	@base[:trains] = make_train_objects(@base[:station], 3)
+	@base[:trains] = make_train_objects(@base[:station], 5)
 
-	# Get uids for each of these 10 trains
+	# Get uids for each of these 5 trains
 	@base[:trains].each do |train|
 		puts "1. Print each uid to fetch"
 		puts train[:uid]
