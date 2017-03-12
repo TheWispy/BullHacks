@@ -12,6 +12,9 @@ set :bind, "0.0.0.0"
 
 # Website Index page (root directory)
 get '/' do
+	#puts check_stations_on_route ["AFK", "BCH", "BSR", "DEA", "DVP", "FAV", "FKC"]
+	#@json = JSON.pretty_generate(check_stations_on_route ["AFK", "BCH", "BSR", "DEA", "DVP", "FAV", "FKC"])
+	#erb :index
 	@base = {
 		# Station to find trains passing through
 		:station => "STP",
@@ -19,26 +22,21 @@ get '/' do
 	}
 
 	# Get 10 trains passing through baseStation
-	@base[:trains] = make_train_objects(@base[:station], 10)
+	@base[:trains] = make_train_objects(@base[:station], 3)
 
 	# Get uids for each of these 10 trains
 	@base[:trains].each do |train|
+		puts "1. Print each uid to fetch"
 		puts train[:uid]
 		@base[:uids].push(train[:uid])
 	end
 
 	# Get routes for each these uids
 	@routes = []
-	@uri = URI.parse("54.175.175.13/schedule.json")
-
-	# @base[:uids].each do |uid|
-	# 	response = Net::HTTP.post_form(@uri, {":uid" => uid})
-	# 	puts response.body
-	# end
-
-	uri = URI('http://54.175.175.13/schedule.json')
 
 	# Get uid from database
+	uri = URI('http://54.175.175.13/schedule.json')
+
 	@base[:uids].each do |uid|
 		# Post to server
 		Net::HTTP.start(uri.host, uri.port) do |http|
@@ -58,28 +56,46 @@ get '/' do
 
 			@routes.push({
 				:uid => uid,
-				:routes => stations
+				:stations => stations
 			})
 		end
 
 		# If route is blank delete
 		@routes.each_with_index do |route, index|
-			if (route[:routes].length == 0)
+			if (route[:stations].length == 0)
 				@routes.delete_at(index)
-			else
-				puts route
 			end
 		end
 	end
 
+	# Return each route as a train list
+	#@routes.each_with_index do |route, index|
+	#	puts check_stations_on_route route[:stations]
+	#end
 
+	# get arrival times for selected uids
+	get_arrival_times_by_uid
 
-	# @trainsList = check_stations_on_route ["BDM", "FLT", "HLN", "LEA", "LUT", "LTN", "HPN", "SAC", "RDT", "WHP", "STP"]
-	# @json = JSON.pretty_generate(@trainsList)
-	# get_percentage "G48957"
-	# # check_stations_on_route ["SHF", "CHD", "DBY", "TAM", "BHM"]
 	erb :index
 end
+
+# Get current station arrival times for a particular array of uids
+def get_arrival_times_by_uid
+
+	@routes.each do |route|
+		# Get all uids for the stations listed in the route
+		all_objects = check_stations_on_route route[:stations]
+
+		# Get the train object for just the uid we want
+		all_objects.each do |train|
+			if (train[:uid] == route[:uid])
+				puts train
+			end
+		end
+	end
+end
+	
+
 
 # Get trains passing through a particular group of stations
 def check_stations_on_route route_array
@@ -93,7 +109,8 @@ def check_stations_on_route route_array
 			# New station for route
 			newStation = {
 				:name => departure[:next_stop],
-				:estimate_mins => departure[:estimate_mins]
+				:arrival_time => departure[:arrival_time]
+				#:estimate_mins => departure[:estimate_mins]
 			}
 
 			# Check station seen before
@@ -108,6 +125,7 @@ def check_stations_on_route route_array
 			end
 
 			# Add to array if never seen before
+			
 			if !seenBefore
 				trainsList.push({
 					:uid => departure[:uid],
@@ -116,7 +134,8 @@ def check_stations_on_route route_array
 					:stations => [newStation]
 				})
 			end
-			puts trainsList[trainsList.length-1]
+			#puts trainsList[trainsList.length-1]
+
 		end
 	end
 	return trainsList
