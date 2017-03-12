@@ -6,8 +6,27 @@
 		<link href="style.css" rel="stylesheet">
 	</head>
 	<body>
+		<script type="application/x-glsl" id="sky-vertex">
+			varying vec2 vUV;
+
+			void main() {
+			  vUV = uv;
+			  vec4 pos = vec4(position, 1.0);
+			  gl_Position = projectionMatrix * modelViewMatrix * pos;
+			}
+			</script>
+
+			<script type="application/x-glsl" id="sky-fragment">
+			uniform sampler2D texture;
+			varying vec2 vUV;
+
+			void main() {
+			  vec4 sample = texture2D(texture, vUV);
+			  gl_FragColor = vec4(sample.xyz, sample.w);
+			}
+		</script>
+		<script src="TWEEN.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/tweenjs/0.6.2/tweenjs.min.js"></script>
 		<script src="OrbitControls.js"></script>
 		<script src="visualiser.js"></script>
 	</body>
