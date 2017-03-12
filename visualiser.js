@@ -7,19 +7,17 @@ var train;
 var textureLoader = new THREE.TextureLoader();
 var fontLoader = new THREE.FontLoader();
 
+var complete = true;
+
 init();
 animate();
 
 var data = [{"uid":"Y60968","origin":"Sheffield","destination":"Armathwaite","stations":[{"name":"Sheffield","arrival_time":null},{"name":"Meadowhall","arrival_time":"10:22"},{"name":"Barnsley","arrival_time":"10:37"},{"name":"Wakefield Kirkgate","arrival_time":"10:55"},{"name":"Shipley","arrival_time":"11:31"},{"name":"Bingley","arrival_time":"11:37"},{"name":"Keighley","arrival_time":"11:41"},{"name":"Skipton","arrival_time":"11:53"}]},{"uid":"P30877","origin":"Birmingham New Street","destination":"Edinburgh Waverley","stations":[{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"},{"name":"Sheffield","arrival_time":"10:16"},{"name":"Wakefield Westgate","arrival_time":"10:44"},{"name":"Leeds","arrival_time":"10:59"},{"name":"York","arrival_time":"11:27"},{"name":"Darlington","arrival_time":"12:03"}]},{"uid":"C80031","origin":"Leeds","destination":"London St Pancras","stations":[{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"},{"name":"Sheffield","arrival_time":"10:23"},{"name":"Chesterfield","arrival_time":"10:37"},{"name":"Nottingham","arrival_time":"11:10"},{"name":"East Midlands Parkway","arrival_time":"11:27"},{"name":"Loughborough","arrival_time":"11:35"},{"name":"Leicester","arrival_time":"11:48"}]},{"uid":"Y61034","origin":"Sheffield","destination":"Scarborough","stations":[{"name":"Sheffield","arrival_time":null},{"name":"Meadowhall","arrival_time":"10:31"},{"name":"Doncaster","arrival_time":"10:51"},{"name":"Goole","arrival_time":"11:16"},{"name":"Gilberdyke","arrival_time":"11:25"},{"name":"Brough","arrival_time":"11:33"},{"name":"Hull","arrival_time":"11:50"},{"name":"Cottingham","arrival_time":"12:12"},{"name":"Sheffield","arrival_time":null},{"name":"Meadowhall","arrival_time":"10:31"},{"name":"Doncaster","arrival_time":"10:51"},{"name":"Goole","arrival_time":"11:16"},{"name":"Gilberdyke","arrival_time":"11:25"},{"name":"Brough","arrival_time":"11:33"},{"name":"Hull","arrival_time":"11:50"},{"name":"Cottingham","arrival_time":"12:12"}]}];
 
-var route = data[1].stations;
+var route = data[2].stations;
 
 function plotTrains(){
-	var routeStr = [];
-	for(i = 0; i<route.length; i++){
-		routeStr.push(route[i].name);
-	}
-	doRoute(routeStr);
+	doRoute(route);
 }
 
 function makeRequest()
@@ -39,7 +37,7 @@ function init(){
 	//Create camera
 	var aspectRatio = window.innerWidth/window.innerHeight
 	camera = new THREE.PerspectiveCamera( 75, aspectRatio, 0.5, 500 );
-	camera.position.set(0, 20, 20);
+	camera.position.set(0, 30, 30);
 	camera.rotation.x = -1;
 
 	//renderer
@@ -59,8 +57,7 @@ function init(){
 
 	//Add controls
 	//controls = new THREE.OrbitControls(camera);
-
-	beginTrain(1, 2, 0.5);
+	setTimeout(function(){begin}, 3000);
 }
 
 function addLights(){
@@ -97,7 +94,7 @@ function lineBetween(array, i, j){
 	scene.add(line);
 }
 
-function beginTrain(i, j, factor){
+function beginTrain(i, j, time){
     var trainMat = new THREE.MeshPhongMaterial({ color: 0xd42525});
     train = new THREE.Mesh( new THREE.BoxGeometry(1, 6, 4), trainMat);
     scene.add(train);
@@ -108,8 +105,8 @@ function beginTrain(i, j, factor){
     var dz = stations[j][1] - train.position.z;
 
 	var position = train.position;
-	var target = { x: train.position.x+dx*factor, y: train.position.y, z: train.position.z+dz*factor };
-	var tween = new TWEEN.Tween(position).to(target, 10000);
+	var target = { x: train.position.x+dx, y: train.position.y, z: train.position.z+dz };
+	var tween = new TWEEN.Tween(position).to(target, time);
 	tween.onUpdate(function(){
 		if (train.position.x == stations[j][0] && train.position.z == stations[j][1]){
 			scene.remove(train);
@@ -118,12 +115,31 @@ function beginTrain(i, j, factor){
     	train.position.x = position.x;
 		train.rotation.y = Math.atan(dx/dz);
     	train.position.z = position.z;});
+
+	tween.onComplete(function() {
+	  console.log('done!')
+	  complete = true;
+		});
 	tween.start();
+
+
+
 }
 
-function doRoute(list, factor){
+function doRoute(list){
+	var routeStr = [];
+	for(i = 0; i<route.length; i++){
+		var check = routeStr.push(route[i].name);
+	}
 	for(i = 1; i<list.length; i++){
-		beginTrain(i-1, i, factor);
+		if(route[i].arrival_time == null){
+			continue;
+		}
+		var dt = (parseInt(route[i].arrival_time.substring(0, 1))*60000 + parseInt(route[i].arrival_time.substring(3, 4)))*1000  - (parseInt(route[i-1].arrival_time.substring(0, 1))*60000 + parseInt(route[i-1].arrival_time.substring(3, 4))*1000);
+		if(complete){
+			beginTrain(i-1, i, dt);
+			complete = false;
+		}
 	}
 }
 
