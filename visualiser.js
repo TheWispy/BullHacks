@@ -85,7 +85,7 @@ function init(){
 
 	//Add controls
 	//controls = new THREE.OrbitControls(camera);
-	setTimeout(function(){begin}, 3000);
+	setTimeout(function(){beginTrain(1, 2, 20000)}, 3000);
 }
 
 function addLights(){
@@ -127,11 +127,11 @@ function beginTrain(i, j, time){
     train = new THREE.Mesh( new THREE.BoxGeometry(1, 6, 4), trainMat);
     scene.add(train);
 	train.castShadow = true;
-    train.position.set(stations[i][0], 1, stations[i][1]);
+    train.position.set(stations[i][0], 1, stations[j][1]);
 
-    var dx = stations[j][0] - train.position.x;
-    var dz = stations[j][1] - train.position.z;
-
+    var dx = stations[i][0] - train.position.x;
+    var dz = stations[i][1] - train.position.z;
+	train.rotation.y = Math.atan(dx/dz);
 	var position = train.position;
 	var target = { x: train.position.x+dx, y: train.position.y, z: train.position.z+dz };
 	var tween = new TWEEN.Tween(position).to(target, time);
@@ -141,7 +141,6 @@ function beginTrain(i, j, time){
 			console.log("Train nuked");
 		}
     	train.position.x = position.x;
-		train.rotation.y = Math.atan(dx/dz);
     	train.position.z = position.z;});
 
 	tween.onComplete(function() {
@@ -155,17 +154,22 @@ function beginTrain(i, j, time){
 }
 
 function doRoute(list){
-	var routeStr = [];
+	var routeOrder = [];
 	for(i = 0; i<route.length; i++){
-		var check = routeStr.push(route[i].name);
+		for(j = 0; j<stations.length; j++){
+			if(route[i].name == stations[j][2]){
+				routeOrder.push(j);
+			}
+		}
+
 	}
-	for(i = 1; i<list.length; i++){
+	for(i = 1; i<routeOrder.length; i++){
 		if(route[i].arrival_time == null){
 			continue;
 		}
 		var dt = (parseInt(route[i].arrival_time.substring(0, 1))*60000 + parseInt(route[i].arrival_time.substring(3, 4)))*1000  - (parseInt(route[i-1].arrival_time.substring(0, 1))*60000 + parseInt(route[i-1].arrival_time.substring(3, 4))*1000);
 		if(complete){
-			beginTrain(i-1, i, dt);
+			beginTrain(routeOrder[i-1], routeOrder[i], dt);
 			complete = false;
 		}
 	}
@@ -184,13 +188,13 @@ function addSceneElements(){
 	var floorMat = new THREE.MeshPhongMaterial({ color: 0xaaaaaa});
 
 
-	var floor = new THREE.Mesh( new THREE.BoxGeometry(50, 1, 50), floorMat);
+	var floor = new THREE.Mesh( new THREE.BoxGeometry(70, 1, 70), floorMat);
 
 	for(var i=0; i<stations.length; i++){
-		var stationMesh = new THREE.Mesh( new THREE.BoxGeometry(5,5,5), stationMat);
+		var stationMesh = new THREE.Mesh( new THREE.BoxGeometry(1,5,1), stationMat);
 		stationMesh.castShadow = true;
 		scene.add(stationMesh);
-		stationMesh.position.set(stations[i][0], 1, stations[i][1]);
+		stationMesh.position.set(stations[i][0]*2 - 20, 1, stations[i][1]*2 - 28);
 	}
 	floor.recieveShadow = true;
 	scene.add(floor);
