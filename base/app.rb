@@ -13,7 +13,7 @@ APP_KEY = "36525551d3dd9faff17210d3ea32a167";
 set :bind, "0.0.0.0"
 
 # Website Index page (root directory)
-get '/' do
+get '/trains.json' do
 	#puts check_stations_on_route ["AFK", "BCH", "BSR", "DEA", "DVP", "FAV", "FKC"]
 	#@json = JSON.pretty_generate(check_stations_on_route ["AFK", "BCH", "BSR", "DEA", "DVP", "FAV", "FKC"])
 	#erb :index
@@ -97,7 +97,6 @@ end
 
 # Get current station arrival times for a particular array of uids
 def get_arrival_times_by_uid
-
 	@routes.each do |route|
 		# Get all uids for the stations listed in the route
 		all_objects = check_stations_on_route route[:stations]
