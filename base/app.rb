@@ -49,6 +49,7 @@ def check_stations_on_route route_array
 				trainsList.push({
 					:uid => departure[:uid],
 					:origin => departure[:origin],
+					:destination => departure[:destination],
 					:stations => [newStation]
 				})
 			end
