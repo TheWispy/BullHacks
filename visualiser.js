@@ -2,7 +2,35 @@ var camera;
 var scene;
 var renderer;
 //var controls;
-var stations = [[10, 20, "Sheffield"], [0, 5, ""], [-15, 15], [10, -10]];
+var stations = [
+	[10, 2, "Darlington"],
+	[10, 4, "York"],
+	[2, 6, "Skipton"],
+	[4, 6, "Keighley"],
+	[6, 6, "Bingley"],
+	[8, 6, "Shipley"],
+	[10, 6, "Leeds"],
+	[8, 8, "Wakefield Westgate"],
+	[10, 8, "Wakefield Kirkgate"],
+	[14, 10, "Goole"],
+	[16, 10, "Gilberdyke"],
+	[18, 10, "Brough"],
+	[20, 10, "Hull"],
+	[10, 12, "Barnsley"],
+	[10, 16, "Meadowhall"],
+	[10, 18, "Sheffield"],
+	[10, 20, "Dronfield"],
+	[6, 22, "Cheltenham Spa"],
+	[8, 22, "Birmingham New Street"],
+	[10, 22, "Chesterfield"],
+	[10, 24, "Derby"],
+	[12, 24, "Nottingham"],
+	[10, 26, "East Midlands Parkway"],
+	[10, 28, "Loughborough"],
+	[10, 30, "Leicester"],
+	[10, 32, "London St Pancras"]
+]
+
 var train;
 var textureLoader = new THREE.TextureLoader();
 var fontLoader = new THREE.FontLoader();
