@@ -7,10 +7,12 @@ require 'uri'
 require 'json'
 require 'sqlite3'
 
-APP_ID = "a7b6d3d6";
-APP_KEY = "36525551d3dd9faff17210d3ea32a167";
+APP_ID = "7c8630ea";
+APP_KEY = "85d57f66a571c8a2138d066380632136";
 
 set :bind, "0.0.0.0"
+
+@stationsAccessed = []
 
 # Website Index page (root directory)
 get '/trains.json' do
@@ -76,9 +78,10 @@ get '/trains.json' do
 	#end
 
 	# get arrival times for selected uids
-	get_arrival_times_by_uid
+	routes_with_arrivals = get_arrival_times_by_uid
 
-	erb :index
+	return JSON.parse(routes_with_arrivals)
+	#erb :index
 end
 
 post '/schedule.json' do
@@ -97,6 +100,7 @@ end
 
 # Get current station arrival times for a particular array of uids
 def get_arrival_times_by_uid
+	routes_with_arrivals = []
 	@routes.each do |route|
 		# Get all uids for the stations listed in the route
 		all_objects = check_stations_on_route route[:stations]
@@ -104,10 +108,11 @@ def get_arrival_times_by_uid
 		# Get the train object for just the uid we want
 		all_objects.each do |train|
 			if (train[:uid] == route[:uid])
-				puts train
+				routes_with_arrivals.push(train)
 			end
 		end
 	end
+	return routes_with_arrivals
 end
 
 
@@ -192,7 +197,18 @@ end
 
 # Return raw json of trains passing through a station
 def get_departures station_name
-	return JSON.parse(HTTP.get("https://transportapi.com/v3/uk/train/station/#{station_name}/live.json?app_id=#{APP_ID}&app_key=#{APP_KEY}&darwin=false&train_status=passenger").body)
+	# See if the station was accessed before
+	@stationsAccessed.each do |station|
+		if (station["station_code"] == station_name)
+			puts "Seen before"
+			return station
+		end
+	end
+
+	# If not accessed before
+	get_request = JSON.parse(HTTP.get("https://transportapi.com/v3/uk/train/station/#{station_name}/live.json?app_id=#{APP_ID}&app_key=#{APP_KEY}&darwin=false&train_status=passenger").body)
+	@stationsAccessed.push(get_request)
+	return get_request
 end
 
 def get_percentage uid
