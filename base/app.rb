@@ -2,6 +2,8 @@ require 'erb'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'http'
+require 'net/http'
+require 'uri'
 
 APP_ID = 98792731;
 APP_KEY = "5674da74eee9936d936bdb41c2b1b7c8";
@@ -9,11 +11,73 @@ APP_KEY = "5674da74eee9936d936bdb41c2b1b7c8";
 set :bind, "0.0.0.0"
 
 # Website Index page (root directory)
-get '/index.json' do
-	@trainsList = check_stations_on_route ["BDM", "FLT", "HLN", "LEA", "LUT", "LTN", "HPN", "SAC", "RDT", "WHP", "STP"]
-	@json = JSON.pretty_generate(@trainsList)
-	get_percentage "G48957"
-	#check_stations_on_route ["SHF", "CHD", "DBY", "TAM", "BHM"]
+get '/' do
+	@base = {
+		# Station to find trains passing through
+		:station => "STP",
+		:uids => []
+	}
+
+	# Get 10 trains passing through baseStation
+	@base[:trains] = make_train_objects(@base[:station], 10)
+
+	# Get uids for each of these 10 trains
+	@base[:trains].each do |train|
+		puts train[:uid]
+		@base[:uids].push(train[:uid])
+	end
+
+	# Get routes for each these uids
+	@routes = []
+	@uri = URI.parse("54.175.175.13/schedule.json")
+
+	# @base[:uids].each do |uid|
+	# 	response = Net::HTTP.post_form(@uri, {":uid" => uid})
+	# 	puts response.body
+	# end
+
+	uri = URI('http://54.175.175.13/schedule.json')
+
+	# Get uid from database
+	@base[:uids].each do |uid|
+		# Post to server
+		Net::HTTP.start(uri.host, uri.port) do |http|
+			request = Net::HTTP::Post.new uri
+			request.set_form_data("uid" => uid)
+			response = http.request request # Net::HTTPResponse object
+
+			# Parse response as json
+			rawData = JSON.parse(response.body)
+
+			# Add each station to an array
+			stations = []
+			rawData.each do |station|
+				#puts station["crs"]
+				stations.push(station["crs"])
+			end
+
+			@routes.push({
+				:uid => uid,
+				:routes => stations
+			})
+		end
+
+		# If route is blank delete
+		@routes.each_with_index do |route, index|
+			if (route[:routes].length == 0)
+				@routes.delete_at(index)
+			else
+				puts route
+			end
+		end
+	end
+
+
+
+	# @trainsList = check_stations_on_route ["BDM", "FLT", "HLN", "LEA", "LUT", "LTN", "HPN", "SAC", "RDT", "WHP", "STP"]
+	# @json = JSON.pretty_generate(@trainsList)
+	# get_percentage "G48957"
+	# # check_stations_on_route ["SHF", "CHD", "DBY", "TAM", "BHM"]
 	erb :index
 end
 
@@ -25,7 +89,6 @@ def check_stations_on_route route_array
 	route_array.each do |curStation|
 		departures = make_train_objects curStation
 
-		
 		departures.each do |departure|
 			# New station for route
 			newStation = {
@@ -59,9 +122,16 @@ def check_stations_on_route route_array
 	return trainsList
 end
 
-def make_train_objects station_name
+# Return a list of hash objects of trains passing through a particular station
+def make_train_objects station_name, no_of_trains = 0
 	rawData = get_departures station_name
-	curDepartures = rawData["departures"]["all"]
+	# Get all trains passing through unless limit specified
+	if (no_of_trains == 0)
+		curDepartures = rawData["departures"]["all"]
+	else
+		curDepartures = rawData["departures"]["all"][0..no_of_trains]
+	end
+
 	trainsList = []
 	
 	# Add converted station name to global variable
@@ -87,6 +157,7 @@ def make_train_objects station_name
 	return trainsList
 end
 
+# Return raw json of trains passing through a station
 def get_departures station_name
 	return JSON.parse(HTTP.get("https://transportapi.com/v3/uk/train/station/#{station_name}/live.json?app_id=#{APP_ID}&app_key=#{APP_KEY}&darwin=false&train_status=passenger").body)
 end
@@ -101,3 +172,7 @@ def get_percentage uid
 
 	#puts @json.select{|key, hash| hash["uid"] == uid }
 end
+
+# Make station objects from base station
+
+# 
