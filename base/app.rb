@@ -8,6 +8,8 @@ APP_KEY = "5674da74eee9936d936bdb41c2b1b7c8";
 
 set :bind, "0.0.0.0"
 
+@stationNameConvertions = {}
+
 # Website Index page (root directory)
 get '/index.json' do
 
@@ -29,7 +31,7 @@ def check_stations_on_route route_array
 		departures.each do |departure|
 			# New station for route
 			newStation = {
-				:name => curStation,
+				:name => departure[:next_stop],
 				:estimate_mins => departure[:estimate_mins]
 			}
 
@@ -63,6 +65,9 @@ def make_train_objects station_name
 	rawData = get_departures station_name
 	curDepartures = rawData["departures"]["all"]
 	trainsList = []
+	
+	# Add converted station name to global variable
+	curFullName = rawData["station_name"]
 
 	# Make trainsList object for each departure
 	curDepartures.each_with_index do |departure, i|
@@ -73,6 +78,7 @@ def make_train_objects station_name
 			:origin => departure["origin_name"],
 			:destination => departure["destination_name"],
 			:estimate_mins => departure["best_departure_estimate_mins"],
+			:next_stop => curFullName,
 			:arrival_time => departure["expected_arrival_time"],
 			:departure_time => departure["expected_departure_time"]
 		}
@@ -86,4 +92,3 @@ end
 def get_departures station_name
 	return JSON.parse(HTTP.get("https://transportapi.com/v3/uk/train/station/#{station_name}/live.json?app_id=#{APP_ID}&app_key=#{APP_KEY}&darwin=false&train_status=passenger").body)
 end
-
