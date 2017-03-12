@@ -21,7 +21,7 @@ get '/trains.json' do
 	#erb :index
 	@base = {
 		# Station to find trains passing through
-		:station => "STP",
+		:station => "SHF",
 		:uids => []
 	}
 
