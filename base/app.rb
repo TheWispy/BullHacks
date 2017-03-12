@@ -4,6 +4,8 @@ require 'sinatra/reloader'
 require 'http'
 require 'net/http'
 require 'uri'
+require 'json'
+require 'sqlite3'
 
 APP_ID = 98792731;
 APP_KEY = "5674da74eee9936d936bdb41c2b1b7c8";
@@ -81,6 +83,20 @@ get '/' do
 	erb :index
 end
 
+post '/schedule.json' do
+	train_uid = params[:uid]
+	puts train_uid
+
+	db = SQLite3::Database.new('trains2.db')
+	db.results_as_hash = true
+
+	sql = "SELECT codes.description, schedule_location.arrival, schedule_location.departure, schedule_location.pass, schedule.train_uid, codes.crs, schedule.stp FROM schedule_location INNER JOIN schedule ON schedule.id = schedule_location.train_id INNER JOIN codes ON schedule_location.tiploc_code = codes.tiploc WHERE schedule.train_uid = :uid AND schedule.stp = (SELECT MIN(schedule.stp) FROM schedule WHERE schedule.train_uid = :uid) AND description NOT NULL AND pass IS NULL"
+
+	result = db.execute(sql, {'uid' => train_uid})
+
+	result.to_json
+end
+
 # Get trains passing through a particular group of stations
 def check_stations_on_route route_array
 	trainsList = []
@@ -133,7 +149,7 @@ def make_train_objects station_name, no_of_trains = 0
 	end
 
 	trainsList = []
-	
+
 	# Add converted station name to global variable
 	curFullName = rawData["station_name"]
 
@@ -175,4 +191,4 @@ end
 
 # Make station objects from base station
 
-# 
+#
