@@ -8,16 +8,14 @@ APP_KEY = "5674da74eee9936d936bdb41c2b1b7c8";
 
 set :bind, "0.0.0.0"
 
-@stationNameConvertions = {}
-
 # Website Index page (root directory)
 get '/index.json' do
-
+	@trainsList = check_stations_on_route ["BDM", "FLT", "HLN", "LEA", "LUT", "LTN", "HPN", "SAC", "RDT", "WHP", "STP"]
+	@json = JSON.pretty_generate(@trainsList)
+	get_percentage "G48957"
 	#check_stations_on_route ["SHF", "CHD", "DBY", "TAM", "BHM"]
-	check_stations_on_route ["BDM", "FLT", "HLN", "LEA", "LUT", "LTN", "HPN", "SAC", "RDT", "WHP", "STP"]
+	erb :index
 end
-
-# 
 
 # Get trains passing through a particular group of stations
 def check_stations_on_route route_array
@@ -58,7 +56,7 @@ def check_stations_on_route route_array
 			puts trainsList[trainsList.length-1]
 		end
 	end
-	return JSON.pretty_generate(trainsList)
+	return trainsList
 end
 
 def make_train_objects station_name
@@ -91,4 +89,15 @@ end
 
 def get_departures station_name
 	return JSON.parse(HTTP.get("https://transportapi.com/v3/uk/train/station/#{station_name}/live.json?app_id=#{APP_ID}&app_key=#{APP_KEY}&darwin=false&train_status=passenger").body)
+end
+
+def get_percentage uid
+	# Get train matching selected uid
+	@trainsList.each do |train|
+		if (train[:uid] == uid)
+			puts train[:stations][0][:estimate_mins]
+		end
+	end
+
+	#puts @json.select{|key, hash| hash["uid"] == uid }
 end
