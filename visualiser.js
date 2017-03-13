@@ -95,8 +95,7 @@ function plotTrains(){
 	doRoute(route);
 }
 
-function makeRequest()
-{
+function makeRequest(){
 	console.log("request");
 	var url = "http://54.175.175.13/trains.json";
 	$.getJSON(url, function(response) {
