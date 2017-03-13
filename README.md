@@ -1,18 +1,16 @@
 # BullHacks
 Our thing for BullHacks
 
-The app can be started by running app.rb.
+To start the app, navigate to the `/base` directory and run:
 
-~~For a more permenant solution that will work when the SSH session isn't running...~~
-
-~~First make the following directories inside **`base`** as follows:~~
 ```
-mkdir tmp
-mkdir tmp/sockets
-mkdir tmp/pids
-mkdir log
+rackup -p 4567
 ```
 
-~~To start the server, run `unicorn -c unicorn.rb -E development -D` from the **`base`** directory. This will start a Daemon running the website. ~~
+Or the port of your choice.
 
-~~To kill the server, run `cat tmp/pids/unicorn.pid | xargs kill -QUIT`, again from the `base` directory~~~~~
+If you want to run the app in production as a Daemon, run
+
+```
+rackup -p 4567 -E production -D
+```
