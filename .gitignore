@@ -113,3 +113,4 @@ Gemfile.lock
 .rvmrc
 
 .idea/
+.db

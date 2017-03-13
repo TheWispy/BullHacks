@@ -8,3 +8,5 @@ gem "sqlite3"
 
 # Http
 gem "http"
+
+gem "shotgun"

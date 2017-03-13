@@ -11,6 +11,7 @@ APP_ID = "7c8630ea";
 APP_KEY = "85d57f66a571c8a2138d066380632136";
 
 set :bind, "0.0.0.0"
+set :server, "webrick"
 
 $stationsAccessed = []
 
