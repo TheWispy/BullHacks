@@ -1,5 +1,7 @@
-# BullHacks
-Our thing for BullHacks
+# Train Tracker
+A semi-functional web application for the real time tracking of trains between Sheffield and London St. Pancras. Dreamt up while on a train, and after navigating a poorly signposted train station, only to realise it had already been done.
+
+Location representation hasn't been properly implemented yet.
 
 To start the app, navigate to the `/base` directory and run:
 
